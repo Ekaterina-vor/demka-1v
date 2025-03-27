@@ -1,0 +1,10 @@
+WITH sold_nights AS (
+    SELECT SUM(DATEDIFF(
+                COALESCE(check_out_date, NOW()), 
+                check_in_date)) AS total_sold_nights
+    FROM stays
+    WHERE check_in_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+)
+SELECT 
+    (sn.total_sold_nights / (COUNT(r.id) * 30)) * 100 AS occupancy_rate
+FROM rooms r, sold_nights sn;
